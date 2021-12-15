@@ -3,6 +3,7 @@ package ru.avalon.javapp.devj120;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.*;
@@ -52,93 +53,76 @@ public class MainFrame extends JFrame {
         Border border = BorderFactory.createLineBorder(Color.BLACK, 3);
         lbl.setFont(lbl.getFont().deriveFont(24.f));
         lbl.setBorder(border);
-        lbl.addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-
-            }
+        lbl.addMouseListener(new MouseAdapter() {
 
             @Override
             public void mousePressed(MouseEvent e) {
-
-                // начинаем бежать только с индекса нажатого поля
-                int countStart = 0;
-                for (int i=0; i < listLabel.size();i++ ) {
-                    if (ar.get(i) == lbl.getText()) {
-                        countStart = i;
-                    }
-                }
-
-
-                for (int i=countStart; i < listLabel.size();i++ ) {
-
-                    if (ar.get(i).equals("")) break;
-
-                    if (i == 0) {
-                        if (ar.get(i+1).equals("") || ar.get(i+4).equals("")) {
-                            pressed(lbl.getText());
-                            lbl.setText("");
-                            break;
-                        }
-                        break;
-                    }
-
-                    if (i == 1 || i == 2 || i == 3) {
-                        if (ar.get(i-1).equals("") || ar.get(i+1).equals("") || ar.get(i+4).equals("")) {
-                            pressed(lbl.getText());
-                            lbl.setText("");
-                            break;
-                        }
-                        break;
-                    }
-
-                    if (i >= 4 && i <= 11) {
-                        if (ar.get(i-1).equals("") || ar.get(i-4).equals("") || ar.get(i+1).equals("") || ar.get(i+4).equals("")) {
-                            pressed(lbl.getText());
-                            lbl.setText("");
-                            break;
-                        }
-                        break;
-                    }
-
-                    if (i == 12 || i == 13 || i == 14) {
-                        if (ar.get(i-1).equals("") || ar.get(i+1).equals("") || ar.get(i-4).equals("")) {
-                            pressed(lbl.getText());
-                            lbl.setText("");
-                            break;
-                        }
-                        break;
-                    }
-
-                    if (i == 15) {
-                        if (ar.get(i-1).equals("") || ar.get(i-4).equals("")) {
-                            pressed(lbl.getText());
-                            lbl.setText("");
-                            break;
-                        }
-                        break;
-                    }
-                }
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
+                MainFrame.this.mousePressed(lbl);
             }
         });
         return lbl;
     }
 
+    private void mousePressed(JLabel lbl) {
+            // начинаем бежать только с индекса нажатого поля
+            int countStart = 0;
+            for (int i=0; i < listLabel.size();i++ ) {
+                if (ar.get(i) == lbl.getText()) {
+                    countStart = i;
+                }
+            }
+
+
+            for (int i=countStart; i < listLabel.size();i++ ) {
+
+                if (ar.get(i).equals("")) break;
+
+                if (i == 0) {
+                    if (ar.get(i+1).equals("") || ar.get(i+4).equals("")) {
+                        pressed(lbl.getText());
+                        lbl.setText("");
+                        break;
+                    }
+                    break;
+                }
+
+                if (i == 1 || i == 2 || i == 3) {
+                    if (ar.get(i-1).equals("") || ar.get(i+1).equals("") || ar.get(i+4).equals("")) {
+                        pressed(lbl.getText());
+                        lbl.setText("");
+                        break;
+                    }
+                    break;
+                }
+
+                if (i >= 4 && i <= 11) {
+                    if (ar.get(i-1).equals("") || ar.get(i-4).equals("") || ar.get(i+1).equals("") || ar.get(i+4).equals("")) {
+                        pressed(lbl.getText());
+                        lbl.setText("");
+                        break;
+                    }
+                    break;
+                }
+
+                if (i == 12 || i == 13 || i == 14) {
+                    if (ar.get(i-1).equals("") || ar.get(i+1).equals("") || ar.get(i-4).equals("")) {
+                        pressed(lbl.getText());
+                        lbl.setText("");
+                        break;
+                    }
+                    break;
+                }
+
+                if (i == 15) {
+                    if (ar.get(i-1).equals("") || ar.get(i-4).equals("")) {
+                        pressed(lbl.getText());
+                        lbl.setText("");
+                        break;
+                    }
+                    break;
+                }
+            }
+    }
 
     private void pressed(String digit) {
         ArrayList<String> arNew = new ArrayList<>();
@@ -171,6 +155,12 @@ public class MainFrame extends JFrame {
         int count = 0;
         for (int i = 1; i < ar.size();i++ ) {
             if (ar.get(i-1).equals("")) continue;
+
+            if (i == 14 || i == 15) {
+                count++;
+                continue;
+            }
+
             if (Integer.parseInt(ar.get(i-1)) == i )
                 count++;
         }
@@ -194,28 +184,26 @@ public class MainFrame extends JFrame {
 
     private void pressedButton() {
 
-        int res = JOptionPane.showConfirmDialog(null, "Are you sure?");
-
-        if (res == 0) {
+        if (JOptionPane.showConfirmDialog(null, "Are you sure?", "Reset confirmation",
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
             // перемешаем
             Collections.shuffle(ar);
 
-             // переместим пустоту в конец
-               for (int i = 0; i < ar.size(); i++) {
-                 if (ar.get(i).equals("")) {
-                   ar.set(i, ar.get(ar.size() - 1));
-                   ar.set(ar.size() - 1, "");
-              }
+            // переместим пустоту в конец
+            for (int i = 0; i < ar.size(); i++) {
+                if (ar.get(i).equals("")) {
+                    ar.set(i, ar.get(ar.size() - 1));
+                    ar.set(ar.size() - 1, "");
+                }
             }
 
-           // заполним поля
-           int i=0;
-            for (JLabel lbl: listLabel) {
+            // заполним поля
+            int i = 0;
+            for (JLabel lbl : listLabel) {
                 lbl.setText(ar.get(i));
                 i++;
             }
-        } else if (res == 2)
-            System.exit(0);
+        }
     }
 
     public static void main(String[] args) {
